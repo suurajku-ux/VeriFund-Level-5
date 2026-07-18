@@ -36,9 +36,8 @@ CONTRACT_ID=$(stellar contract deploy \
 echo "Contract deployed successfully!"
 echo "Contract Address: $CONTRACT_ID"
 
-# Step 4: Initialize contract with Native XLM token on Testnet
-# Native XLM Contract ID on Testnet is: CDLZFC3SYJYD5QCZ67IE24BIJ6Z545DOJTLM2JQMHI2SS63LDW56D7EB
-NATIVE_XLM="CDLZFC3SYJYD5QCZ67IE24BIJ6Z545DOJTLM2JQMHI2SS63LDW56D7EB"
+# Native XLM Contract ID on Testnet is: CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC
+NATIVE_XLM="CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC"
 
 echo "Initializing VeriFund contract with native XLM token..."
 INIT_TX=$(stellar contract invoke \
