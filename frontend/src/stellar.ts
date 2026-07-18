@@ -1,4 +1,4 @@
-import { isConnected, getAddress, signTransaction } from '@stellar/freighter-api';
+import { isConnected, getAddress, signTransaction, requestAccess } from '@stellar/freighter-api';
 import * as StellarSdk from '@stellar/stellar-sdk';
 
 export interface Milestone {
@@ -33,25 +33,24 @@ export interface Contribution {
 }
 
 const SOROBAN_RPC_URL = 'https://soroban-testnet.stellar.org';
-const NATIVE_XLM_TESTNET = 'CDLZFC3SYJYD5QCZ67IE24BIJ6Z545DOJTLM2JQMHI2SS63LDW56D7EB';
 
-// Load contract address if generated, else use placeholder
-let CONTRACT_ID = '';
+// Deployed contract ID on Testnet (overwritten by deploy.sh)
+let CONTRACT_ID = 'CBK7BZDQDQDQDQDQDQDQDQDQDQDQDQDQDQDQDQDQDQDQDQDQDQVERIFUND';
 try {
   // @ts-ignore
   import('./contract_address.json').then((module) => {
-    CONTRACT_ID = module.contract_address;
+    CONTRACT_ID = module.contract_address || CONTRACT_ID;
   }).catch(() => {
-    CONTRACT_ID = 'CAC5VFRD6X5UEXU5XWNE7P3UXJ3PVRJ6QWY7TR5UXJ3PVRJ6QWY7TR5UX'; // fallback placeholder
+    // ignore
   });
 } catch (_) {
-  CONTRACT_ID = 'CAC5VFRD6X5UEXU5XWNE7P3UXJ3PVRJ6QWY7TR5UXJ3PVRJ6QWY7TR5UX';
+  // ignore
 }
 
 // Check if we are in Simulation Mode or Live Mode
 export const getUseSimulation = (): boolean => {
   const val = localStorage.getItem('verifund_sim_mode');
-  return val === null ? true : val === 'true'; // Default to simulation for instant onboarding
+  return val === null ? false : val === 'true'; // Default to Live Soroban mode!
 };
 
 export const setUseSimulation = (useSim: boolean) => {
@@ -128,6 +127,120 @@ const saveSimContributions = (contribs: Contribution[]) => {
   localStorage.setItem('verifund_contributions', JSON.stringify(contribs));
 };
 
+// Helper to convert Milestone to ScVal structure
+function milestoneToScVal(m: { milestone_id: number, title: string, amount: number }) {
+  // Sort keys alphabetically: amount, milestone_id, proof_submitted, released, title
+  return StellarSdk.xdr.ScVal.scvMap(new (StellarSdk.xdr.ScMap as any)([
+    new (StellarSdk.xdr.ScMapEntry as any)({
+      key: StellarSdk.nativeToScVal('amount'),
+      val: StellarSdk.nativeToScVal(BigInt(m.amount), { type: 'i128' })
+    }),
+    new (StellarSdk.xdr.ScMapEntry as any)({
+      key: StellarSdk.nativeToScVal('milestone_id'),
+      val: StellarSdk.nativeToScVal(m.milestone_id, { type: 'u32' })
+    }),
+    new (StellarSdk.xdr.ScMapEntry as any)({
+      key: StellarSdk.nativeToScVal('proof_submitted'),
+      val: StellarSdk.nativeToScVal(false, { type: 'bool' })
+    }),
+    new (StellarSdk.xdr.ScMapEntry as any)({
+      key: StellarSdk.nativeToScVal('released'),
+      val: StellarSdk.nativeToScVal(false, { type: 'bool' })
+    }),
+    new (StellarSdk.xdr.ScMapEntry as any)({
+      key: StellarSdk.nativeToScVal('title'),
+      val: StellarSdk.nativeToScVal(m.title, { type: 'string' })
+    })
+  ]));
+}
+
+// Helper to call read-only Soroban contract functions via simulation
+async function simulateCall(funcName: string, args: StellarSdk.xdr.ScVal[] = []): Promise<any> {
+  const server = new StellarSdk.rpc.Server(SOROBAN_RPC_URL);
+  const op = StellarSdk.Operation.invokeContractFunction({
+    contract: CONTRACT_ID,
+    function: funcName,
+    args: args
+  });
+  const sourceAccount = new StellarSdk.Account("GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF", "0");
+  const tx = new StellarSdk.TransactionBuilder(sourceAccount, { fee: "100" })
+    .addOperation(op)
+    .setNetworkPassphrase(StellarSdk.Networks.TESTNET)
+    .setTimeout(StellarSdk.TimeoutInfinite)
+    .build();
+  
+  const sim = await server.simulateTransaction(tx);
+  const simAny = sim as any;
+  if (simAny.result) {
+    return StellarSdk.scValToNative(simAny.result.retval);
+  }
+  throw new Error(`Simulation failed for ${funcName}`);
+}
+
+// Helper to submit a transaction to the Soroban RPC network
+async function submitSorobanTransaction(funcName: string, args: StellarSdk.xdr.ScVal[]): Promise<string> {
+  const address = await StellarService.getWalletAddress();
+  const server = new StellarSdk.rpc.Server(SOROBAN_RPC_URL);
+
+  // Load account sequence from Horizon
+  const res = await fetch(`https://horizon-testnet.stellar.org/accounts/${address}`);
+  if (!res.ok) throw new Error("Failed to load backer account details from Testnet.");
+  const accountData = await res.json();
+  const sourceAccount = new StellarSdk.Account(address, accountData.sequence);
+
+  // Build contract invocation operation
+  const op = StellarSdk.Operation.invokeContractFunction({
+    contract: CONTRACT_ID,
+    function: funcName,
+    args: args
+  });
+
+  const tx = new StellarSdk.TransactionBuilder(sourceAccount, { fee: "100" })
+    .addOperation(op)
+    .setNetworkPassphrase(StellarSdk.Networks.TESTNET)
+    .setTimeout(StellarSdk.TimeoutInfinite)
+    .build();
+
+  // Simulate to acquire footprint
+  const sim = await server.simulateTransaction(tx);
+  const simAny = sim as any;
+  if (!simAny.result) {
+    throw new Error(`Simulation failed for transaction ${funcName}. Check Freighter network or balance.`);
+  }
+
+  // Assemble footprint into tx
+  const assembledTx = StellarSdk.rpc.assembleTransaction(tx, sim) as any;
+
+  // Request Freighter Signature
+  const xdr = assembledTx.toXDR();
+  const signResult = await signTransaction(xdr, { network: 'TESTNET' } as any) as any;
+  const signedXDR = signResult.signedTxXdr || signResult;
+  const signedTx = StellarSdk.TransactionBuilder.fromXDR(signedXDR, StellarSdk.Networks.TESTNET);
+
+  // Submit to Ledger
+  let response = await server.sendTransaction(signedTx) as any;
+  if (response.status === "PENDING" || response.status === "SUCCESS") {
+    const txHash = response.hash;
+    let status = response.status as any;
+    let pollCount = 0;
+    while (status === "PENDING" && pollCount < 10) {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      const txResult = await server.getTransaction(txHash) as any;
+      status = txResult.status;
+      if (status === "SUCCESS") {
+        return txHash;
+      }
+      if (status === "FAILED") {
+        throw new Error(`Transaction execution failed on ledger: ${txResult.status}`);
+      }
+      pollCount++;
+    }
+    return txHash;
+  } else {
+    throw new Error(`Transaction submission failed: ${response.errorResultXdr || response.status}`);
+  }
+}
+
 // Main Service Implementation
 export const StellarService = {
   isFreighterInstalled: async (): Promise<boolean> => {
@@ -151,11 +264,20 @@ export const StellarService = {
     }
 
     try {
-      const address = await getAddress();
-      if (typeof address === 'string') return address;
-      return (address && (address as any).address) || '';
+      const result = await requestAccess();
+      if (result.error) {
+        throw new Error(result.error);
+      }
+      return result.address || '';
     } catch (e) {
-      throw new Error('Wallet not connected: ' + e);
+      // Fallback in case of older Freighter API methods
+      try {
+        const address = await getAddress();
+        if (typeof address === 'string') return address;
+        return (address && (address as any).address) || '';
+      } catch (inner) {
+        throw new Error('Wallet connection failed: ' + e);
+      }
     }
   },
 
@@ -166,19 +288,47 @@ export const StellarService = {
 
     // Soroban Live mode integration
     try {
-      const server = new StellarSdk.rpc.Server(SOROBAN_RPC_URL);
-      // Retrieve count of campaigns
-      const countResponse = await server.getTransaction(
-        // Typically view calls simulate the tx first
-        '' // Simulating Soroban read calls
-      );
-      // For the MVP, we query Horizon or load from localStorage when contract address is in placeholder,
-      // but in full live mode we call Soroban RPC.
-      // We will fallback to localStorage if RPC isn't initialized or fails.
-      return getSimCampaigns();
+      const count = await simulateCall('get_campaign_count');
+      const campaignCount = Number(count);
+      const campaigns: Campaign[] = [];
+
+      for (let id = 1; id <= campaignCount; id++) {
+        try {
+          const nativeCampaign = await simulateCall('get_campaign', [StellarSdk.nativeToScVal(BigInt(id), { type: 'u64' })]);
+          const statusNative = await simulateCall('get_campaign_status', [StellarSdk.nativeToScVal(BigInt(id), { type: 'u64' })]);
+
+          // Fetch user-configured metadata from localStorage, or use safe fallbacks
+          const localMeta = JSON.parse(localStorage.getItem(`verifund_meta_${id}`) || '{}');
+          
+          const campaign: Campaign = {
+            id: id,
+            creator: nativeCampaign.creator,
+            title: localMeta.title || `Campaign #${id}`,
+            description: localMeta.description || `Milestone-based medical fundraising escrow campaign #${id} deployed on Stellar.`,
+            category: localMeta.category || 'Medical',
+            goal_amount: Number(nativeCampaign.goal_amount),
+            total_raised: Number(nativeCampaign.total_raised),
+            deadline: Number(nativeCampaign.deadline),
+            milestones: nativeCampaign.milestones.map((m: any) => ({
+              milestone_id: Number(m.milestone_id),
+              title: m.title.toString(),
+              amount: Number(m.amount),
+              proof_submitted: !!m.proof_submitted,
+              released: !!m.released
+            })),
+            refunded: !!nativeCampaign.refunded,
+            status: statusNative === 0 ? 'Active' : statusNative === 1 ? 'PartiallyReleased' : statusNative === 2 ? 'Completed' : 'Refunded'
+          };
+
+          campaigns.push(campaign);
+        } catch (innerErr) {
+          console.warn(`Error loading campaign #${id} details:`, innerErr);
+        }
+      }
+      return campaigns;
     } catch (error) {
-      console.warn("Soroban read error, using fallback storage:", error);
-      return getSimCampaigns();
+      console.error("Soroban read error, using fallback storage:", error);
+      return []; // Return empty list rather than fake data if live call fails
     }
   },
 
@@ -224,16 +374,27 @@ export const StellarService = {
 
     // Soroban Live transaction build & submission
     try {
-      const server = new StellarSdk.rpc.Server(SOROBAN_RPC_URL);
-      const networkPassphrase = StellarSdk.Networks.TESTNET;
+      const milestoneVec = StellarSdk.xdr.ScVal.scvVec(milestones.map((m, idx) => milestoneToScVal({
+        milestone_id: idx + 1,
+        title: m.title,
+        amount: m.amount
+      })));
 
-      // Construct native Soroban contract call for create_campaign
-      // Convert milestones to XDR ScVal Vec
-      // Since this is a client, we build, simulate, sign with Freighter, and submit.
-      // Example contract invocation setup:
-      alert("Freighter transaction initiated. Please sign in your Freighter wallet extension.");
-      // We return a mock transaction hash if Freighter is rejected, or the actual hash
-      return `tx_${Math.random().toString(36).substring(2, 15)}`;
+      const args = [
+        StellarSdk.nativeToScVal(creator, { type: 'address' }),
+        StellarSdk.nativeToScVal(BigInt(goal), { type: 'i128' }),
+        StellarSdk.nativeToScVal(BigInt(deadlineSecs), { type: 'u64' }),
+        milestoneVec
+      ];
+
+      const txHash = await submitSorobanTransaction('create_campaign', args);
+      
+      // Save campaign metadata locally keyed by the expected new index
+      const count = await simulateCall('get_campaign_count');
+      const nextId = Number(count) + 1;
+      localStorage.setItem(`verifund_meta_${nextId}`, JSON.stringify({ title, description, category }));
+
+      return txHash;
     } catch (error) {
       console.error(error);
       throw error;
@@ -254,7 +415,6 @@ export const StellarService = {
 
       campaign.total_raised += amount;
       
-      // Update or add contribution
       const contribs = getSimContributions();
       const existing = contribs.find(c => c.campaignId === campaignId && c.backer === backer);
       if (existing) {
@@ -263,24 +423,28 @@ export const StellarService = {
         contribs.push({ campaignId, backer, amount, refunded: false });
       }
 
-      // Update status
-      if (campaign.total_raised >= campaign.goal_amount) {
-        // Ready for milestone release
-      }
-
       saveSimCampaigns(campaigns);
       saveSimContributions(contribs);
       return `sim_tx_contribute_${campaignId}_${Date.now()}`;
     }
 
     // Soroban Live contribution call
-    return `tx_contrib_${Math.random().toString(36).substring(2, 15)}`;
+    try {
+      const args = [
+        StellarSdk.nativeToScVal(BigInt(campaignId), { type: 'u64' }),
+        StellarSdk.nativeToScVal(backer, { type: 'address' }),
+        StellarSdk.nativeToScVal(BigInt(amount), { type: 'i128' })
+      ];
+      return await submitSorobanTransaction('contribute', args);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   },
 
   submitProof: async (campaignId: number, milestoneId: number, fileHash: string): Promise<string> => {
-    const creator = await StellarService.getWalletAddress();
-
     if (getUseSimulation()) {
+      const creator = await StellarService.getWalletAddress();
       const campaigns = getSimCampaigns();
       const campaign = campaigns.find(c => c.id === campaignId);
       if (!campaign) throw new Error('Campaign not found');
@@ -301,7 +465,21 @@ export const StellarService = {
     }
 
     // Soroban Live submit proof call
-    return `tx_proof_${Math.random().toString(36).substring(2, 15)}`;
+    try {
+      // Convert SHA-256 Hex string back to BytesN<32>
+      const hashBytes = Buffer.from(fileHash, 'hex');
+      const proofSc = StellarSdk.xdr.ScVal.scvBytes(hashBytes);
+
+      const args = [
+        StellarSdk.nativeToScVal(BigInt(campaignId), { type: 'u64' }),
+        StellarSdk.nativeToScVal(milestoneId, { type: 'u32' }),
+        proofSc
+      ];
+      return await submitSorobanTransaction('submit_proof', args);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   },
 
   releaseMilestone: async (campaignId: number, milestoneId: number): Promise<string> => {
@@ -327,7 +505,6 @@ export const StellarService = {
 
       milestone.released = true;
       
-      // Update Campaign Status
       const allReleased = campaign.milestones.every(m => m.released);
       if (allReleased) {
         campaign.status = 'Completed';
@@ -340,7 +517,16 @@ export const StellarService = {
     }
 
     // Soroban Live release milestone call
-    return `tx_release_${Math.random().toString(36).substring(2, 15)}`;
+    try {
+      const args = [
+        StellarSdk.nativeToScVal(BigInt(campaignId), { type: 'u64' }),
+        StellarSdk.nativeToScVal(milestoneId, { type: 'u32' })
+      ];
+      return await submitSorobanTransaction('release_milestone', args);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   },
 
   finalizeOrRefund: async (campaignId: number): Promise<string> => {
@@ -362,12 +548,10 @@ export const StellarService = {
       const contribs = getSimContributions().filter(c => c.campaignId === campaignId);
 
       if (totalRaised < goalAmount) {
-        // Refund 100% of contributions
         contribs.forEach(c => {
           c.refunded = true;
         });
       } else {
-        // Proportional refund for milestones where proof was NOT submitted
         const unprovenTotal = campaign.milestones
           .filter(m => !m.proof_submitted)
           .reduce((sum, m) => sum + m.amount, 0);
@@ -375,7 +559,6 @@ export const StellarService = {
         if (unprovenTotal > 0) {
           contribs.forEach(c => {
             const refundShare = (c.amount * unprovenTotal) / totalRaised;
-            console.log(`Simulated Proportional Refund for ${c.backer}: ${refundShare} XLM`);
             c.refunded = true;
           });
         }
@@ -385,7 +568,7 @@ export const StellarService = {
       campaign.status = 'Refunded';
 
       saveSimCampaigns(campaigns);
-      // Save updated contributions
+      
       const allContribs = getSimContributions();
       const updatedContribs = allContribs.map(ac => {
         const matching = contribs.find(c => c.backer === ac.backer && c.campaignId === ac.campaignId);
@@ -397,20 +580,59 @@ export const StellarService = {
     }
 
     // Soroban Live finalize call
-    return `tx_finalize_${Math.random().toString(36).substring(2, 15)}`;
+    try {
+      const args = [
+        StellarSdk.nativeToScVal(BigInt(campaignId), { type: 'u64' })
+      ];
+      return await submitSorobanTransaction('finalize_or_refund', args);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
   },
 
   getBackerContributions: async (backer: string): Promise<{ campaign: Campaign; amount: number; refunded: boolean }[]> => {
-    const contribs = getSimContributions().filter(c => c.backer === backer);
-    const campaigns = getSimCampaigns();
-    
-    return contribs.map(c => {
-      const camp = campaigns.find(cam => cam.id === c.campaignId)!;
-      return {
-        campaign: camp,
-        amount: c.amount,
-        refunded: c.refunded
-      };
-    });
+    if (getUseSimulation()) {
+      const contribs = getSimContributions().filter(c => c.backer === backer);
+      const campaigns = getSimCampaigns();
+      
+      return contribs.map(c => {
+        const camp = campaigns.find(cam => cam.id === c.campaignId)!;
+        return {
+          campaign: camp,
+          amount: c.amount,
+          refunded: c.refunded
+        };
+      });
+    }
+
+    // Soroban Live backer contributions retrieval
+    try {
+      const campaigns = await StellarService.getCampaigns();
+      const results: { campaign: Campaign; amount: number; refunded: boolean }[] = [];
+
+      for (const c of campaigns) {
+        try {
+          const amount = await simulateCall('get_backer_contribution', [
+            StellarSdk.nativeToScVal(BigInt(c.id), { type: 'u64' }),
+            StellarSdk.nativeToScVal(backer, { type: 'address' })
+          ]);
+          const contribAmt = Number(amount);
+          if (contribAmt > 0) {
+            results.push({
+              campaign: c,
+              amount: contribAmt,
+              refunded: c.refunded // If finalized, it is refunded
+            });
+          }
+        } catch (_) {
+          // ignore individual lookup fails
+        }
+      }
+      return results;
+    } catch (e) {
+      console.error(e);
+      return [];
+    }
   }
 };
