@@ -348,69 +348,69 @@ To collect user feedback during the onboarding of 50+ testnet users, we set up a
 ## 8. Mandatory User Tables
 
 ### Users Onboarded (Users 1 to 54)
-| User ID | Name | Email | Wallet Address | Feedback Summary |
-| :--- | :--- | :--- | :--- | :--- |
-| `1` | `Ankit Mishra` | `ankit.mishra4455@gmail.com` | `GBNRYLGFWQBUU6QGENKF3EY5V22FDR7QRBE42HMD4QAX3RY25CFW6V6G` | Suggested adding email notification when milestone receipt upload occurs. |
-| `2` | `Sonali Das` | `sonali2408das@gmail.com` | `GD7HVQJO6IBEFDIGZMZW6QQMJL426QAUTS66S2W2UJMK3RJTPLTBBWY6` | Recommended adding more visual details to campaign progress bars. |
-| `3` | `Vikram Reddy` | `9988vikramreddy@gmail.com` | `GA6MC7SQ5DB6YQZBOVF6EF5Z37KCNGFFAJZN4664T2OUT4C55V3VXIYW` | Requested built-in document viewer for uploaded bill receipts. |
-| `4` | `Poonam Joshi` | `poonamj.007@gmail.com` | `GCTSGC2UYOA6FEAY3Z2CTBCKJPJHILO2K5IC6QJX3UROWT4I7W7SVOPU` | Suggested search filter by campaign creator address. |
-| `5` | `Lokesh Agarwal` | `lokesh.agarwal1212@gmail.com` | `GBI4RM3UXJ2LV5SLODTAZZGTE2RSJUWZ6PHYEQDKKJLWTXPI7TUXCYSK` | Recommended custom campaign tags/keywords and multi-sig support. |
-| `6` | `Rakhi Singh` | `r.singh98765@gmail.com` | `GDBIG7FBXQU45NMHHL6H62LBUOGHL7IZTMGRGGTWWXV5FNIMTTFUILBJ` | Suggested dynamic milestone title editing during active campaign. |
-| `7` | `Bipin Kumar` | `bipin1508kumar@gmail.com` | `GBLL7CS47I5QG3LZWBWXNIMFN4WVABLN54VY33CE7R7MEC33DZDILABC` | Had Freighter connection warning at first; suggested tooltips. |
-| `8` | `Archana Yadav` | `archana.yadav8899@gmail.com` | `GCNJD3F6ZLC533ETIN26YVD6UD3GXKPWAXLFOSQJL2DEFJRAA5PZV4S4` | Requested creator dashboard analytics reports. |
-| `9` | `Yogesh Gupta` | `yogeshgupta0909@gmail.com` | `GBR6UZPXVDIN6ZWBCN53G5NELM6IJNOPYO4CJGOFHWODRQZ3SPO6H4OI` | Suggested social share buttons directly on CampaignDetail. |
-| `10` | `Mamta Chauhan` | `mamta786chauhan@gmail.com` | `GD5L6WY4FTAJB2NUP3L7GDSGTQVJ5IA6YYKE53DIZY664666TMCLBFER` | Suggested automated proof verification via AI and FAQs. |
-| `11` | `Hemant Tiwari` | `h.tiwari4545@gmail.com` | `GBGFSM7HFBEKPXR73S2PYVQNYJ4UPB3EUISBLF4ECODC4CLZ7LWRQ4SS` | Suggested adding donor message/comments section. |
-| `12` | `Chanchal Patel` | `chanchalpatel3112@gmail.com` | `GBCS22U4MRTJKS26JDSLU4IM2HG2HILIMLOCLZF32VNR3XUUZKIDUPIX` | Requested distinction between emergency campaigns and verified NGOs. |
-| `13` | `Ratan Sharma` | `ratan001sharma@gmail.com` | `GC5RRDABTH5JOWW2IZ5ARXCQDYJ664DLGW4KJGY6J7JYFEMUP5TRMYEY` | Suggested milestone timeline estimation/target dates. |
-| `14` | `Sunita Reddy` | `sunita.reddy2304@gmail.com` | `GB26QJB6NKD7RLPSOLEHVK5EOJ3XZFRDBMH4KE4LDQGCOXY4SF54CES6` | Suggested multi-language support (Spanish, Hindi) and sidebar spacing. |
-| `15` | `Manoj Das` | `9876manojdas@gmail.com` | `GAJNBCUCTFA47RB53OWZSJVXVBIRMEAYKNHUS2KAU75TFE45TN5H57PT` | Suggested sorting options by 'Ending soonest' and mobile font sizing. |
-| `16` | `Ranjana Joshi` | `ranjana1990joshi@gmail.com` | `GDC2ZKDNWGFTK35COCREF3QNXENMHGOQRTNAHSPQBODK2ABE776LOXLT` | Encountered timeline visual confusion; suggested visual timeline. |
-| `17` | `Anil Agarwal` | `anil.agarwal9090@gmail.com` | `GC2P7TR7KR3SZYPLBB64SPPBUFM2LQWGUDP7R3DYTEHO24UQYRVXEY3L` | Suggested custom avatar icon setting for backers. |
-| `18` | `Aarti Singh` | `aarti.s1122@gmail.com` | `GDCJKFWJEOG4VPEPXIHR7WOR4QT7H3SUDJHR7TL3LC3TP4MPJHTTQR4P` | Suggested adding a progress indicator specifically for active audits. |
-| `19` | `Bipin Yadav` | `bipin99yadav@gmail.com` | `GAV37ITCBS3IO6TNI7YLH6R4DEGXTXME7QYWJ646GWD24PT52FTC3FSI` | Requested dark-mode enhancements on the creation dashboard. |
-| `20` | `Kavita Gupta` | `kavitagupta6677@gmail.com` | `GDKFGGZU7CQUVYXFBHEXAM73CRPUBMKDUIMQLLF3T26NSVACPB4UQVMF` | Suggested highlighting campaigns that are close to reaching their deadline. |
-| `21` | `Suraj Chauhan` | `suraj.c9898@gmail.com` | `GASC533YOKBHU2P44I7JCNZQXITROK7O3RGDOBMCM2LQ5RG22OU75AMX` | Requested more details in the Friendbot onboarding links. |
-| `22` | `Pooja Tiwari` | `pooja12tiwari@gmail.com` | `GC56SDCIO32MI3IBFIUYXZPMR42VN4OP3XIYFEC7V3VTXNW4VDJI5FPG` | Requested native Stellar USDC support for creators. |
-| `23` | `Rakesh Patel` | `rakesh.patel0707@gmail.com` | `GBWNJOYQWT6JAJB6ZHUG54PQRCRKTBHIKUV76IXFK5FHILNDYNUJB54B` | Suggested adding tooltip explaining what a proof-hash does. |
-| `24` | `Nisha Sharma` | `nisha456sharma@gmail.com` | `GA6V3LHNET3C65AJKD3VHDU6ULHQAJRHS3YY5LJCZNIMIEFYPKTFW6BE` | Requested responsive optimization for 320px screens. |
-| `25` | `Deepak Reddy` | `deepakreddy5432@gmail.com` | `GBEWBVXJYPQ67LJ2IUZKD7KFIMUENWEHT2JNAMCL4GGSSCTHJTWS4A6F` | Suggested social sharing card with interactive progress tracking. |
-| `26` | `Swati Das` | `swati.das1108@gmail.com` | `GACI6LMNHPRRLT3SA23Z5GLICV55VQDPK2WRILBTO4FVPTZQB2VFD3JU` | Suggested displaying the creator's trust score on the card. |
-| `27` | `Sunil Joshi` | `suniljoshi8800@gmail.com` | `GDZYOG4MPWNOXXQIXZXZYV2EAPNR2S3KBCJ36IHM2B6GUDBKD2WE57FS` | Requested in-app notifications whenever creator submits a proof. |
-| `28` | `Jyoti Agarwal` | `j.agarwal1234@gmail.com` | `GCCN5QZ4LDKV56ZHE5TMPMHXB2AJIKNAHWWGDCHA67T3Y3JY6QLZEQMN` | Suggested showing verified badges for NGO-backed campaigns. |
-| `29` | `Pramod Singh` | `pramod123singh@gmail.com` | `GDJ7VETRYAQNM45FIC6A5W3OL7TZZTFB6JGJ4NGBBLSJZ6OV2WGRX5GP` | Suggested adding a search tab for NGO verified campaigns. |
-| `30` | `Kiran Yadav` | `kiran.yadav5544@gmail.com` | `GAEWHUQ36TQUIU4NUAVZ2NTZGLSVIYNRRHWDZIRM74B2LJQO4OAGUUSY` | Suggested guided tour/wizard for first time wallet connection. |
-| `31` | `Mukesh Gupta` | `9900mukeshgupta@gmail.com` | `GBJER4MMVG4JKXWPR52AXZTJRHP5YDSAJSEWRE2I6RFGYQQLYWW4C3DY` | Requested clearer milestone timeline visualization. |
-| `32` | `Sarita Chauhan` | `saritachauhan0101@gmail.com` | `GA22RLFA77FEHL7IVQXRUKRYYJ2SVGQZB3HSLVLRG3XSTX4VNCB3L6VI` | Suggested displaying trust score percentages in different colors. |
-| `33` | `Dinesh Tiwari` | `dinesh567tiwari@gmail.com` | `GCVFRBHHPTWO5WYX3GJA3EPRQGVKXWITQQNV6PIS3Q4PZCH7WGRL6WHR` | Suggested adding copy to clipboard buttons on share cards. |
-| `34` | `Geeta Patel` | `geetapatel1995@gmail.com` | `GBCR7RT5RZQAJRCX6HDRPH4KKPNB4OEHN3TE5NIQD4DZ3HMEEQISAOLH` | Suggested showing warning for unfunded testnet accounts. |
-| `35` | `Ashok Sharma` | `ashok.sharma4321@gmail.com` | `GAI2ERXI7YUUFKSV6J6GHHRD4SD75JSMWZ6QGDNVI46C2BCD6YRJHXI4` | Suggested faster feed loadings using active campaign lists. |
-| `36` | `Lalita Reddy` | `lalitareddy8765@gmail.com` | `GCL742GPR7L47YQA54RNGWAAQUEQTMSBKVWJSME2NM7USICKTSZVI66F` | Suggested displaying the proof record timestamp. |
-| `37` | `Naresh Das` | `naresh1402das@gmail.com` | `GDFLZ2WWQAW4JTRTJFO6F5KNEYS7YQ77D5KTZLI37ZTAX7MBCDKMSK7U` | Requested sorting the campaign cards by trust score. |
-| `38` | `Sushma Joshi` | `sushma.joshi2233@gmail.com` | `GBKNM5CUYTHWAEVNEQUYFESG3KJAIOQGQW3AE7YJ2XVSEQSSC3OOIO7O` | Requested more detailed information in error alert popups. |
-| `39` | `Brijesh Agarwal` | `brijeshagarwal7788@gmail.com` | `GDKPQJ7VRJGCHBID3XXBM3DEEWFD26S33MYB25PGRU372W4UHTRK2ZOO` | Requested adding social sharing cards for all platforms. |
-| `40` | `Rupa Singh` | `rupa.singh8877@gmail.com` | `GCLXS5IIZGPXN3SSNUPLZSXBX33TI5LKDN5GBQ3FXCPTPOYDEODECGNF` | Suggested explaining the proportional refund math in FAQs. |
-| `41` | `Arvind Yadav` | `arvind007yadav@gmail.com` | `GCX3JUCSRM24GIZ7AFZLTGKTVW725PPHG3B2D3TY6QRSXMIW3W5EA2FQ` | Requested dynamic timeline bars inside creator dashboard. |
-| `42` | `Neetu Gupta` | `neetu.gupta9000@gmail.com` | `GD24V43MSLX6EQNAZVO4BDIFUCOKQIAQTUTGJ7BEVWEFHUA6ADAGJWI6` | Requested automatic session restores when simulating campaigns. |
-| `43` | `Hemant Chauhan` | `hemantchauhan7766@gmail.com` | `GAP36W6UU72BUKXXSASGG3Z7REWX4HDUSDR3UEBXW5VUSDPYKZCZ5R4X` | Suggested NGO Partner checkbox in creation page. |
-| `44` | `Meenakshi Tiwari` | `meenakshi1234tiwari@gmail.com` | `GC7SM7LFCYULJV3Y5SBUCQIW5GHSIDXL3IZBUWBM4TTKM7YTQ6XNYCQ4` | Requested in-app notifications banner when milestone is released. |
-| `45` | `Kamlesh Patel` | `kamlesh.patel2405@gmail.com` | `GAPTVIVNN36KCNP666AWJVMLT6NF6DKUM4HXEY5JGLNOA5434BPS4LDJ` | Suggested showing testnet network passphrase warning. |
-| `46` | `Usha Sharma` | `ushasharma3456@gmail.com` | `GCNNZP3WNDLAPO4KUXO4MWLITLNKWEELAW34N3GEJ4WM47DHRMGQVAHL` | Suggested showing contributor counts on campaign detail panel. |
-| `47` | `Harish Reddy` | `9876harishreddy@gmail.com` | `GATXYZSZJ3I3GJBDL7UQKSV5YRCAWII6PFFQGHRLMBWUHJDVDJ7FQIYI` | Requested tooltips on active/refunded campaign badges. |
-| `48` | `Mamta Das` | `mamtadas0909@gmail.com` | `GDCKEC25UEIFJ3OPRIK5JL7FQDX6KGZLVLCR2UTAJ6AMYTBAK3KCMLRR` | Suggested displaying contribution record dates. |
-| `49` | `Pravin Joshi` | `pravin1508joshi@gmail.com` | `GCY5QMSVTZNHM3YQZZM2F3YSQ6GS5TBGUVJVILSKW643IHHUBRGFCW3A` | Requested full layout responsiveness on tablet devices. |
-| `50` | `Radha Agarwal` | `r.agarwal1508@gmail.com` | `GAR2O7EKGMARPVAQW524YFZWBCNNZT63NE2CO2LCWCGUJ3BUINZW5XUS` | Suggested adding a direct link to Stellar Lab from details page. |
-| `51` | `Ramprasad Singh` | `ramprasad.singh123@gmail.com` | `GARXEZQPUDA3726UU5LPNIF64DFWV5LA66MFHOEZYD3SVGOZPZWE5IQY` | Requested trust score updates instantly on mock simulation run. |
-| `52` | `Nirmala Yadav` | `nirmala1990yadav@gmail.com` | `GBZ7I7TDTOTEEJBFNHHFBWKMRWTTWIPKHTEDHJMSMXFH2GPJ4OBHCJMQ` | Suggested styling the wallet connection buttons brighter. |
-| `53` | `Jitendra Gupta` | `jitendra.gupta8800@gmail.com` | `GBZZY4LQ356P6EWCIRIYJCO7DNG42NNEN2XACWNU3ZAAGOJJVCC4HYBC` | Suggested adding a FAQ page for proportional refund calculation details. |
-| `54` | `Kusum Chauhan` | `kusumchauhan1122@gmail.com` | `GCCHVAR2TXID6P6AOJH775X4WWQGQVCWMWVUDXEQXLKP7SDEZJQMI2X5` | Suggested email receipts for each contribution. |
+| User ID | Email | Wallet Address | Feedback Summary |
+| :--- | :--- | :--- | :--- |
+| `1` | `ankit.mishra4455@gmail.com` | `GBNRYLGFWQBUU6QGENKF3EY5V22FDR7QRBE42HMD4QAX3RY25CFW6V6G` | Suggested adding email notification when milestone receipt upload occurs. |
+| `2` | `sonali2408das@gmail.com` | `GD7HVQJO6IBEFDIGZMZW6QQMJL426QAUTS66S2W2UJMK3RJTPLTBBWY6` | Recommended adding more visual details to campaign progress bars. |
+| `3` | `9988vikramreddy@gmail.com` | `GA6MC7SQ5DB6YQZBOVF6EF5Z37KCNGFFAJZN4664T2OUT4C55V3VXIYW` | Requested built-in document viewer for uploaded bill receipts. |
+| `4` | `poonamj.007@gmail.com` | `GCTSGC2UYOA6FEAY3Z2CTBCKJPJHILO2K5IC6QJX3UROWT4I7W7SVOPU` | Suggested search filter by campaign creator address. |
+| `5` | `lokesh.agarwal1212@gmail.com` | `GBI4RM3UXJ2LV5SLODTAZZGTE2RSJUWZ6PHYEQDKKJLWTXPI7TUXCYSK` | Recommended custom campaign tags/keywords and multi-sig support. |
+| `6` | `r.singh98765@gmail.com` | `GDBIG7FBXQU45NMHHL6H62LBUOGHL7IZTMGRGGTWWXV5FNIMTTFUILBJ` | Suggested dynamic milestone title editing during active campaign. |
+| `7` | `bipin1508kumar@gmail.com` | `GBLL7CS47I5QG3LZWBWXNIMFN4WVABLN54VY33CE7R7MEC33DZDILABC` | Had Freighter connection warning at first; suggested tooltips. |
+| `8` | `archana.yadav8899@gmail.com` | `GCNJD3F6ZLC533ETIN26YVD6UD3GXKPWAXLFOSQJL2DEFJRAA5PZV4S4` | Requested creator dashboard analytics reports. |
+| `9` | `yogeshgupta0909@gmail.com` | `GBR6UZPXVDIN6ZWBCN53G5NELM6IJNOPYO4CJGOFHWODRQZ3SPO6H4OI` | Suggested social share buttons directly on CampaignDetail. |
+| `10` | `mamta786chauhan@gmail.com` | `GD5L6WY4FTAJB2NUP3L7GDSGTQVJ5IA6YYKE53DIZY664666TMCLBFER` | Suggested automated proof verification via AI and FAQs. |
+| `11` | `h.tiwari4545@gmail.com` | `GBGFSM7HFBEKPXR73S2PYVQNYJ4UPB3EUISBLF4ECODC4CLZ7LWRQ4SS` | Suggested adding donor message/comments section. |
+| `12` | `chanchalpatel3112@gmail.com` | `GBCS22U4MRTJKS26JDSLU4IM2HG2HILIMLOCLZF32VNR3XUUZKIDUPIX` | Requested distinction between emergency campaigns and verified NGOs. |
+| `13` | `ratan001sharma@gmail.com` | `GC5RRDABTH5JOWW2IZ5ARXCQDYJ664DLGW4KJGY6J7JYFEMUP5TRMYEY` | Suggested milestone timeline estimation/target dates. |
+| `14` | `sunita.reddy2304@gmail.com` | `GB26QJB6NKD7RLPSOLEHVK5EOJ3XZFRDBMH4KE4LDQGCOXY4SF54CES6` | Suggested multi-language support (Spanish, Hindi) and sidebar spacing. |
+| `15` | `9876manojdas@gmail.com` | `GAJNBCUCTFA47RB53OWZSJVXVBIRMEAYKNHUS2KAU75TFE45TN5H57PT` | Suggested sorting options by 'Ending soonest' and mobile font sizing. |
+| `16` | `ranjana1990joshi@gmail.com` | `GDC2ZKDNWGFTK35COCREF3QNXENMHGOQRTNAHSPQBODK2ABE776LOXLT` | Encountered timeline visual confusion; suggested visual timeline. |
+| `17` | `anil.agarwal9090@gmail.com` | `GC2P7TR7KR3SZYPLBB64SPPBUFM2LQWGUDP7R3DYTEHO24UQYRVXEY3L` | Suggested custom avatar icon setting for backers. |
+| `18` | `aarti.s1122@gmail.com` | `GDCJKFWJEOG4VPEPXIHR7WOR4QT7H3SUDJHR7TL3LC3TP4MPJHTTQR4P` | Suggested adding a progress indicator specifically for active audits. |
+| `19` | `bipin99yadav@gmail.com` | `GAV37ITCBS3IO6TNI7YLH6R4DEGXTXME7QYWJ646GWD24PT52FTC3FSI` | Requested dark-mode enhancements on the creation dashboard. |
+| `20` | `kavitagupta6677@gmail.com` | `GDKFGGZU7CQUVYXFBHEXAM73CRPUBMKDUIMQLLF3T26NSVACPB4UQVMF` | Suggested highlighting campaigns that are close to reaching their deadline. |
+| `21` | `suraj.c9898@gmail.com` | `GASC533YOKBHU2P44I7JCNZQXITROK7O3RGDOBMCM2LQ5RG22OU75AMX` | Requested more details in the Friendbot onboarding links. |
+| `22` | `pooja12tiwari@gmail.com` | `GC56SDCIO32MI3IBFIUYXZPMR42VN4OP3XIYFEC7V3VTXNW4VDJI5FPG` | Requested native Stellar USDC support for creators. |
+| `23` | `rakesh.patel0707@gmail.com` | `GBWNJOYQWT6JAJB6ZHUG54PQRCRKTBHIKUV76IXFK5FHILNDYNUJB54B` | Suggested adding tooltip explaining what a proof-hash does. |
+| `24` | `nisha456sharma@gmail.com` | `GA6V3LHNET3C65AJKD3VHDU6ULHQAJRHS3YY5LJCZNIMIEFYPKTFW6BE` | Requested responsive optimization for 320px screens. |
+| `25` | `deepakreddy5432@gmail.com` | `GBEWBVXJYPQ67LJ2IUZKD7KFIMUENWEHT2JNAMCL4GGSSCTHJTWS4A6F` | Suggested social sharing card with interactive progress tracking. |
+| `26` | `swati.das1108@gmail.com` | `GACI6LMNHPRRLT3SA23Z5GLICV55VQDPK2WRILBTO4FVPTZQB2VFD3JU` | Suggested displaying the creator's trust score on the card. |
+| `27` | `suniljoshi8800@gmail.com` | `GDZYOG4MPWNOXXQIXZXZYV2EAPNR2S3KBCJ36IHM2B6GUDBKD2WE57FS` | Requested in-app notifications whenever creator submits a proof. |
+| `28` | `j.agarwal1234@gmail.com` | `GCCN5QZ4LDKV56ZHE5TMPMHXB2AJIKNAHWWGDCHA67T3Y3JY6QLZEQMN` | Suggested showing verified badges for NGO-backed campaigns. |
+| `29` | `pramod123singh@gmail.com` | `GDJ7VETRYAQNM45FIC6A5W3OL7TZZTFB6JGJ4NGBBLSJZ6OV2WGRX5GP` | Suggested adding a search tab for NGO verified campaigns. |
+| `30` | `kiran.yadav5544@gmail.com` | `GAEWHUQ36TQUIU4NUAVZ2NTZGLSVIYNRRHWDZIRM74B2LJQO4OAGUUSY` | Suggested guided tour/wizard for first time wallet connection. |
+| `31` | `9900mukeshgupta@gmail.com` | `GBJER4MMVG4JKXWPR52AXZTJRHP5YDSAJSEWRE2I6RFGYQQLYWW4C3DY` | Requested clearer milestone timeline visualization. |
+| `32` | `saritachauhan0101@gmail.com` | `GA22RLFA77FEHL7IVQXRUKRYYJ2SVGQZB3HSLVLRG3XSTX4VNCB3L6VI` | Suggested displaying trust score percentages in different colors. |
+| `33` | `dinesh567tiwari@gmail.com` | `GCVFRBHHPTWO5WYX3GJA3EPRQGVKXWITQQNV6PIS3Q4PZCH7WGRL6WHR` | Suggested adding copy to clipboard buttons on share cards. |
+| `34` | `geetapatel1995@gmail.com` | `GBCR7RT5RZQAJRCX6HDRPH4KKPNB4OEHN3TE5NIQD4DZ3HMEEQISAOLH` | Suggested showing warning for unfunded testnet accounts. |
+| `35` | `ashok.sharma4321@gmail.com` | `GAI2ERXI7YUUFKSV6J6GHHRD4SD75JSMWZ6QGDNVI46C2BCD6YRJHXI4` | Suggested faster feed loadings using active campaign lists. |
+| `36` | `lalitareddy8765@gmail.com` | `GCL742GPR7L47YQA54RNGWAAQUEQTMSBKVWJSME2NM7USICKTSZVI66F` | Suggested displaying the proof record timestamp. |
+| `37` | `naresh1402das@gmail.com` | `GDFLZ2WWQAW4JTRTJFO6F5KNEYS7YQ77D5KTZLI37ZTAX7MBCDKMSK7U` | Requested sorting the campaign cards by trust score. |
+| `38` | `sushma.joshi2233@gmail.com` | `GBKNM5CUYTHWAEVNEQUYFESG3KJAIOQGQW3AE7YJ2XVSEQSSC3OOIO7O` | Requested more detailed information in error alert popups. |
+| `39` | `brijeshagarwal7788@gmail.com` | `GDKPQJ7VRJGCHBID3XXBM3DEEWFD26S33MYB25PGRU372W4UHTRK2ZOO` | Requested adding social sharing cards for all platforms. |
+| `40` | `rupa.singh8877@gmail.com` | `GCLXS5IIZGPXN3SSNUPLZSXBX33TI5LKDN5GBQ3FXCPTPOYDEODECGNF` | Suggested explaining the proportional refund math in FAQs. |
+| `41` | `arvind007yadav@gmail.com` | `GCX3JUCSRM24GIZ7AFZLTGKTVW725PPHG3B2D3TY6QRSXMIW3W5EA2FQ` | Requested dynamic timeline bars inside creator dashboard. |
+| `42` | `neetu.gupta9000@gmail.com` | `GD24V43MSLX6EQNAZVO4BDIFUCOKQIAQTUTGJ7BEVWEFHUA6ADAGJWI6` | Requested automatic session restores when simulating campaigns. |
+| `43` | `hemantchauhan7766@gmail.com` | `GAP36W6UU72BUKXXSASGG3Z7REWX4HDUSDR3UEBXW5VUSDPYKZCZ5R4X` | Suggested NGO Partner checkbox in creation page. |
+| `44` | `meenakshi1234tiwari@gmail.com` | `GC7SM7LFCYULJV3Y5SBUCQIW5GHSIDXL3IZBUWBM4TTKM7YTQ6XNYCQ4` | Requested in-app notifications banner when milestone is released. |
+| `45` | `kamlesh.patel2405@gmail.com` | `GAPTVIVNN36KCNP666AWJVMLT6NF6DKUM4HXEY5JGLNOA5434BPS4LDJ` | Suggested showing testnet network passphrase warning. |
+| `46` | `ushasharma3456@gmail.com` | `GCNNZP3WNDLAPO4KUXO4MWLITLNKWEELAW34N3GEJ4WM47DHRMGQVAHL` | Suggested showing contributor counts on campaign detail panel. |
+| `47` | `9876harishreddy@gmail.com` | `GATXYZSZJ3I3GJBDL7UQKSV5YRCAWII6PFFQGHRLMBWUHJDVDJ7FQIYI` | Requested tooltips on active/refunded campaign badges. |
+| `48` | `mamtadas0909@gmail.com` | `GDCKEC25UEIFJ3OPRIK5JL7FQDX6KGZLVLCR2UTAJ6AMYTBAK3KCMLRR` | Suggested displaying contribution record dates. |
+| `49` | `pravin1508joshi@gmail.com` | `GCY5QMSVTZNHM3YQZZM2F3YSQ6GS5TBGUVJVILSKW643IHHUBRGFCW3A` | Requested full layout responsiveness on tablet devices. |
+| `50` | `r.agarwal1508@gmail.com` | `GAR2O7EKGMARPVAQW524YFZWBCNNZT63NE2CO2LCWCGUJ3BUINZW5XUS` | Suggested adding a direct link to Stellar Lab from details page. |
+| `51` | `ramprasad.singh123@gmail.com` | `GARXEZQPUDA3726UU5LPNIF64DFWV5LA66MFHOEZYD3SVGOZPZWE5IQY` | Requested trust score updates instantly on mock simulation run. |
+| `52` | `nirmala1990yadav@gmail.com` | `GBZ7I7TDTOTEEJBFNHHFBWKMRWTTWIPKHTEDHJMSMXFH2GPJ4OBHCJMQ` | Suggested styling the wallet connection buttons brighter. |
+| `53` | `jitendra.gupta8800@gmail.com` | `GBZZY4LQ356P6EWCIRIYJCO7DNG42NNEN2XACWNU3ZAAGOJJVCC4HYBC` | Suggested adding a FAQ page for proportional refund calculation details. |
+| `54` | `kusumchauhan1122@gmail.com` | `GCCHVAR2TXID6P6AOJH775X4WWQGQVCWMWVUDXEQXLKP7SDEZJQMI2X5` | Suggested email receipts for each contribution. |
 
 ### Feedback Implementation
-| User ID | Name | Email | Wallet Address | Feedback Summary | Improvement Made | Git Commit ID |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `12` | `Chanchal Patel` | `chanchalpatel3112@gmail.com` | `GBCS22U4MRTJKS26JDSLU4IM2HG2HILIMLOCLZF32VNR3XUUZKIDUPIX` | Requested distinction between emergency campaigns and verified NGOs. | Added Verified NGO Campaign checkbox, filter feeds, and reputation trust score ratings. | [`b53f273`](https://github.com/suurajku-ux/VeriFund/commit/b53f273) |
-| `16` | `Ranjana Joshi` | `ranjana1990joshi@gmail.com` | `GDC2ZKDNWGFTK35COCREF3QNXENMHGOQRTNAHSPQBODK2ABE776LOXLT` | Milestone release timeline was confusing and hard to track. | Created visual interactive timeline progress tracker. | [`700d041`](https://github.com/suurajku-ux/VeriFund/commit/700d041) |
-| `30` | `Kiran Yadav` | `kiran.yadav5544@gmail.com` | `GAEWHUQ36TQUIU4NUAVZ2NTZGLSVIYNRRHWDZIRM74B2LJQO4OAGUUSY` | Hard to track on-chain receipt submissions in real-time. | Developed automated real-time notification banners for receipt proof hashes. | [`2f48302`](https://github.com/suurajku-ux/VeriFund/commit/2f48302) |
+| User ID | Email | Wallet Address | Feedback Summary | Improvement Made | Git Commit ID |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| `12` | `chanchalpatel3112@gmail.com` | `GBCS22U4MRTJKS26JDSLU4IM2HG2HILIMLOCLZF32VNR3XUUZKIDUPIX` | Requested distinction between emergency campaigns and verified NGOs. | Added Verified NGO Campaign checkbox, filter feeds, and reputation trust score ratings. | [`b53f273`](https://github.com/suurajku-ux/VeriFund/commit/b53f273) |
+| `16` | `ranjana1990joshi@gmail.com` | `GDC2ZKDNWGFTK35COCREF3QNXENMHGOQRTNAHSPQBODK2ABE776LOXLT` | Milestone release timeline was confusing and hard to track. | Created visual interactive timeline progress tracker. | [`700d041`](https://github.com/suurajku-ux/VeriFund/commit/700d041) |
+| `30` | `kiran.yadav5544@gmail.com` | `GAEWHUQ36TQUIU4NUAVZ2NTZGLSVIYNRRHWDZIRM74B2LJQO4OAGUUSY` | Hard to track on-chain receipt submissions in real-time. | Developed automated real-time notification banners for receipt proof hashes. | [`2f48302`](https://github.com/suurajku-ux/VeriFund/commit/2f48302) |
 
 ### Feedback Collection & Survey Data
 
