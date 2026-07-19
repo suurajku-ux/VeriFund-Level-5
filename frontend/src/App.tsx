@@ -38,7 +38,11 @@ function App() {
     // Auto restore session if simulated mock address exists
     const simMode = localStorage.getItem('verifund_sim_mode') === 'true';
     if (simMode) {
-      const mockAddr = localStorage.getItem('verifund_mock_address') || 'GCHHHKNWLK6KGAVIQD5UEZ3NDLGF4POQVABLL2M3WUR5GVGKOQIECKUQ';
+      let mockAddr = localStorage.getItem('verifund_mock_address') || 'GCHHHKNWLK6KGAVIQD5UEZ3NDLGF4POQVABLL2M3WUR5GVGKOQIECKUQ';
+      if (mockAddr.length !== 56) {
+        mockAddr = 'GCHHHKNWLK6KGAVIQD5UEZ3NDLGF4POQVABLL2M3WUR5GVGKOQIECKUQ';
+        localStorage.setItem('verifund_mock_address', mockAddr);
+      }
       setAddress(mockAddr);
     }
   }, [refreshTrigger]);

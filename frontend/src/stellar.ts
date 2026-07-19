@@ -264,7 +264,7 @@ export const StellarService = {
   getWalletAddress: async (): Promise<string> => {
     if (getUseSimulation()) {
       let mockAddr = localStorage.getItem('verifund_mock_address');
-      if (!mockAddr) {
+      if (!mockAddr || mockAddr.length !== 56) {
         mockAddr = 'GCHHHKNWLK6KGAVIQD5UEZ3NDLGF4POQVABLL2M3WUR5GVGKOQIECKUQ';
         localStorage.setItem('verifund_mock_address', mockAddr);
       }
