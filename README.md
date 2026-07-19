@@ -4,6 +4,10 @@ VeriFund is a production-ready, milestone-based crowdfunding escrow platform des
 
 It addresses donor trust and fundraising fraud by replacing the traditional lump-sum release model with a conditional milestone-based escrow. The goal amount is divided into discrete milestones, and funds are only released to the campaign creator after they submit a cryptographic proof-hash of a document (e.g. medical bills, surgery receipts) on-chain. If the deadline passes without proofs being submitted, the unspent portion is automatically refunded proportionally to all backers based on their individual contribution share.
 
+### 🔗 Quick Links
+- **Live Deployed Website**: [veri-fund-delta.vercel.app](https://veri-fund-delta.vercel.app/)
+- **Live Demo Video Walkthrough**: [Google Photos Demo Video](https://photos.app.goo.gl/yTxxo6vWPnDnPF1Z7)
+
 ---
 
 ## 1. System Architecture
@@ -196,7 +200,7 @@ chmod +x deploy.sh
 *   **Proof Submission Tx Hash**: [`6ab5172b7b15b7ee56faf4df1e0365bd1fa65fdb46a855bfe0fc8c46562a660f`](https://stellar.expert/explorer/testnet/tx/6ab5172b7b15b7ee56faf4df1e0365bd1fa65fdb46a855bfe0fc8c46562a660f)
 *   **Milestone Release Tx Hash**: [`a66206300c3ba75795de7c2c11bb263c6cc2eeaf3e2254aa0c7fc70516767022`](https://stellar.expert/explorer/testnet/tx/a66206300c3ba75795de7c2c11bb263c6cc2eeaf3e2254aa0c7fc70516767022)
 *   **Proportional Refund Tx Hash**: [`6630a894adaa15c9432587bc3f4c680f3a1b7e7598d11c6204d947bf306b4bb9`](https://stellar.expert/explorer/testnet/tx/6630a894adaa15c9432587bc3f4c680f3a1b7e7598d11c6204d947bf306b4bb9)
-*   **Live Demo (Production)**: [VeriFund Live Demo](https://verifund-stellar.vercel.app)
+*   **Live Demo (Production)**: [VeriFund Live Demo](https://veri-fund-delta.vercel.app/)
 
 ---
 
@@ -217,8 +221,8 @@ All onboarded testers are required to submit their feedback via the Google Form.
 9. **Would you recommend this product to others?** (Required)
 10. **What improvements would you like to see?** (Required)
 
-*   **Feedback Form Link**: [Google Form Feedback Link](https://forms.gle/VeriFundFeedbackPlaceholder)
-*   **Excel Export / Responses Sheet**: [Excel Feedback Responses](https://docs.google.com/spreadsheets/d/VeriFundResponsesPlaceholder)
+*   **Feedback Form Link**: [Google Form Feedback Link](https://docs.google.com/forms/d/1gA5eaKhoUXDkJPoJOqBxK_UPqPV6eS3l66Fwx7XYrjY/viewform)
+*   **Excel Export / Responses Sheet**: [Excel Feedback Responses](https://docs.google.com/spreadsheets/d/1zaN8fhXRLe9XZ_2vic7FQsTsudM0qNoGQrlxy6vYnJk/edit?usp=sharing)
 
 ### Onboarding Tracking Checklist (Target: 10+ Testnet Users)
 - `[x]` User 1 - Create campaign (`0d32fc45ecbec493313c47dfb6c0920ad0db775214236607e4c7c6be7e69928c`)
@@ -266,13 +270,13 @@ All onboarded testers are required to submit their feedback via the Google Form.
 ### Feedback Implementation
 | User ID | Name | Email | Wallet Address | Feedback Summary | Improvement Made | Git Commit ID |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `7` | `Sushma Tiwari` | `sushma786tiwari@gmail.com` | `GAVWFB63GARTDME7GFY7QZAKIDLOZTILE7PE5LWR3F43EMFJSSZPB52F` | Had Freighter connection error with warning that the network is set to Testnet but transaction is on Mainnet. | Updated the Freighter API `signTransaction` bridge configuration to explicitly pass `networkPassphrase` to avoid defaulting to PUBLIC network. | [`385bce9`](https://github.com/verifund/commits/385bce9) |
-| `12` | `Ashok Sharma` | `ashok.sharma9988@gmail.com` | `GDHVEOOE45R4BJC7HTV55QJFKEQNWMM5BIVB4LET4MZFTKIRU3UGFCXA` | Encountered an issue where transaction assembly failed with `toXDR is not a function` during contract calls. | Call `.build()` on the `TransactionBuilder` clone returned by `assembleTransaction` to get the built Transaction object. | [`236f5a4`](https://github.com/verifund/commits/236f5a4) |
-| `16` | `Hemant Yadav` | `h.yadav8899@gmail.com` | `GBO4TTWAPA5IVWQANVJWC6UI46FAV7AQX6D3R6VSDE44IFYFI33PEUU3` | Received contract deserialization errors (UnexpectedType/Value) when building campaigns from the browser. | Add explicit Symbol typecasting to Milestone map keys in the client ScVal serializer to match Rust struct requirements. | [`1e4d67a`](https://github.com/verifund/commits/1e4d67a) |
+| `7` | `Sushma Tiwari` | `sushma786tiwari@gmail.com` | `GAVWFB63GARTDME7GFY7QZAKIDLOZTILE7PE5LWR3F43EMFJSSZPB52F` | Had Freighter connection error with warning that the network is set to Testnet but transaction is on Mainnet. | Updated the Freighter API `signTransaction` bridge configuration to explicitly pass `networkPassphrase` to avoid defaulting to PUBLIC network. | [`d546f44`](https://github.com/suurajku-ux/VeriFund/commit/d546f44) |
+| `12` | `Ashok Sharma` | `ashok.sharma9988@gmail.com` | `GDHVEOOE45R4BJC7HTV55QJFKEQNWMM5BIVB4LET4MZFTKIRU3UGFCXA` | Encountered an issue where transaction assembly failed with `toXDR is not a function` during contract calls. | Call `.build()` on the `TransactionBuilder` clone returned by `assembleTransaction` to get the built Transaction object. | [`f690e4d`](https://github.com/suurajku-ux/VeriFund/commit/f690e4d) |
+| `16` | `Hemant Yadav` | `h.yadav8899@gmail.com` | `GBO4TTWAPA5IVWQANVJWC6UI46FAV7AQX6D3R6VSDE44IFYFI33PEUU3` | Received contract deserialization errors (UnexpectedType/Value) when building campaigns from the browser. | Add explicit Symbol typecasting to Milestone map keys in the client ScVal serializer to match Rust struct requirements. | [`8a13141`](https://github.com/suurajku-ux/VeriFund/commit/8a13141) |
 ### Feedback Collection & Survey Data
 
 To collect and track responses during the user feedback phase, we set up a public feedback form and a linked tracking database:
-*   **Feedback Form**: [Google Form Feedback Link](https://docs.google.com/forms/d/1gA5eaKhoUXDkJPoJOqBxK_UPqPV6eS3l66Fwx7XYrjY/edit)
+*   **Feedback Form**: [Google Form Feedback Link](https://docs.google.com/forms/d/1gA5eaKhoUXDkJPoJOqBxK_UPqPV6eS3l66Fwx7XYrjY/viewform)
 *   **Response Database**: [Google Sheet Response Tracker](https://docs.google.com/spreadsheets/d/1zaN8fhXRLe9XZ_2vic7FQsTsudM0qNoGQrlxy6vYnJk/edit?usp=sharing)
 
 ---
@@ -290,4 +294,4 @@ To collect and track responses during the user feedback phase, we set up a publi
 *   **Mobile Responsiveness**: ![alt text](image-1.png)
 *   **Sentry Monitoring Console**: ![alt text](image-2.png)
 *   **CI/CD Workflow**: ![alt text](image-3.png)
-*   **Demo Video**: [VeriFund Demo Walkthrough Video](https://youtube.com/verifund-stellar-demo)
+*   **Demo Video**: [VeriFund Live Demo Video](https://photos.app.goo.gl/yTxxo6vWPnDnPF1Z7)

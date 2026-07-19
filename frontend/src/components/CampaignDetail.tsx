@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Campaign, StellarService, Milestone } from '../stellar';
+import { Campaign, StellarService, Milestone, getUseSimulation } from '../stellar';
 import { ArrowLeft, Clock, ShieldCheck, FileCheck, Award, Upload, CheckCircle, HelpCircle, Loader2, AlertCircle } from 'lucide-react';
 
 interface CampaignDetailProps {
@@ -60,10 +60,35 @@ export const CampaignDetail: React.FC<CampaignDetailProps> = ({ campaignId, addr
     }
 
     // Check balance
-    const savedBal = localStorage.getItem(`verifund_balance_${address}`);
-    const balance = savedBal ? Number(savedBal) : 1000;
+    let balance = 0;
+    const useSim = getUseSimulation();
+    if (useSim) {
+      const savedBal = localStorage.getItem(`verifund_balance_${address}`);
+      balance = savedBal ? Number(savedBal) : 1000;
+    } else {
+      try {
+        const res = await fetch(`https://horizon-testnet.stellar.org/accounts/${address}`);
+        if (res.ok) {
+          const data = await res.json();
+          const nativeBal = data.balances.find((b: any) => b.asset_type === 'native');
+          if (nativeBal) {
+            balance = Number(nativeBal.balance);
+          }
+        } else if (res.status === 404) {
+          setActionError('Your account is not funded on Stellar Testnet yet. Please fund it first.');
+          return;
+        } else {
+          // Horizon error: bypass client-side balance check and let contract simulation handle it
+          balance = Infinity;
+        }
+      } catch (e) {
+        // Network/Horizon error: bypass client-side balance check and let contract simulation handle it
+        balance = Infinity;
+      }
+    }
+
     if (balance < contribAmount) {
-      setActionError('Insufficient balance in your wallet.');
+      setActionError(`Insufficient balance in your wallet. You have ${balance === Infinity ? 'unknown' : balance.toLocaleString()} XLM but tried to contribute ${contribAmount} XLM.`);
       return;
     }
 
@@ -73,7 +98,9 @@ export const CampaignDetail: React.FC<CampaignDetailProps> = ({ campaignId, addr
       await StellarService.contribute(campaign.id, contribAmount);
       
       // Deduct simulated balance
-      localStorage.setItem(`verifund_balance_${address}`, String(balance - contribAmount));
+      if (useSim) {
+        localStorage.setItem(`verifund_balance_${address}`, String(balance - contribAmount));
+      }
 
       setActionSuccess(`Successfully contributed ${contribAmount} XLM to the campaign escrow!`);
       setContribAmount(50);
