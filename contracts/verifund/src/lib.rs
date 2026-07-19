@@ -43,6 +43,7 @@ pub struct Campaign {
     pub deadline: u64,
     pub milestones: Vec<Milestone>,
     pub refunded: bool,
+    pub verified_ngo: bool,
 }
 
 #[contracttype]
@@ -104,6 +105,7 @@ impl VeriFundContract {
         goal_amount: i128,
         deadline: u64,
         milestones: Vec<Milestone>,
+        verified_ngo: bool,
     ) -> u64 {
         creator.require_auth();
 
@@ -139,6 +141,7 @@ impl VeriFundContract {
             deadline,
             milestones,
             refunded: false,
+            verified_ngo,
         };
 
         env.storage().persistent().set(&DataKey::Campaign(count), &campaign);
@@ -472,6 +475,52 @@ impl VeriFundContract {
     pub fn get_campaign(env: Env, campaign_id: u64) -> Campaign {
         env.storage().persistent().get::<_, Campaign>(&DataKey::Campaign(campaign_id))
             .unwrap_or_else(|| env.panic_with_error(ContractError::CampaignNotFound))
+    }
+
+    // Calculates a creator trust score out of 100 based on milestone proofs vs missed in finalized/ended campaigns
+    pub fn get_creator_trust_score(env: Env, creator: Address) -> u32 {
+        let count = Self::get_campaign_count(env.clone());
+        let mut total_milestones: u32 = 0;
+        let mut proven_milestones: u32 = 0;
+
+        for i in 1..=count {
+            if let Some(campaign) = env.storage().persistent().get::<_, Campaign>(&DataKey::Campaign(i)) {
+                if campaign.creator == creator {
+                    let has_ended = env.ledger().timestamp() >= campaign.deadline || campaign.refunded;
+                    if has_ended {
+                        for j in 0..campaign.milestones.len() {
+                            let m = campaign.milestones.get(j).unwrap();
+                            total_milestones += 1;
+                            if m.proof_submitted {
+                                proven_milestones += 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if total_milestones == 0 {
+            100 // Clean slate trust score
+        } else {
+            ((proven_milestones as u64 * 100) / total_milestones as u64) as u32
+        }
+    }
+
+    // Returns a list of active campaign IDs (not refunded, deadline in future)
+    pub fn get_active_campaigns(env: Env) -> Vec<u64> {
+        let count = Self::get_campaign_count(env.clone());
+        let mut active_campaigns = Vec::new(&env);
+        let now = env.ledger().timestamp();
+
+        for i in 1..=count {
+            if let Some(campaign) = env.storage().persistent().get::<_, Campaign>(&DataKey::Campaign(i)) {
+                if !campaign.refunded && now < campaign.deadline {
+                    active_campaigns.push_back(i);
+                }
+            }
+        }
+        active_campaigns
     }
 }
 

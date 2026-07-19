@@ -17,6 +17,7 @@ export const CreateCampaign: React.FC<CreateCampaignProps> = ({ address, onSucce
     { title: 'Surgery / Main Procedure', amount: 600 },
     { title: 'Hospitalization & Medication', amount: 400 }
   ]);
+  const [verifiedNgo, setVerifiedNgo] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -85,10 +86,12 @@ export const CreateCampaign: React.FC<CreateCampaignProps> = ({ address, onSucce
         category,
         goal,
         deadlineSecs,
-        milestones
+        milestones,
+        verifiedNgo
       );
       setSuccess(true);
       setTitle('');
+      setVerifiedNgo(false);
       setDescription('');
       setGoal(1000);
       setMilestones([
@@ -162,6 +165,19 @@ export const CreateCampaign: React.FC<CreateCampaignProps> = ({ address, onSucce
               required
             />
           </div>
+        </div>
+
+        <div className="flex items-center gap-3 p-3 bg-blue-500/5 rounded-lg border border-blue-500/10">
+          <input
+            type="checkbox"
+            id="verifiedNgo"
+            className="w-4 h-4 rounded border-white/10 text-blue-600 focus:ring-blue-500 accent-blue-500 cursor-pointer"
+            checked={verifiedNgo}
+            onChange={(e) => setVerifiedNgo(e.target.checked)}
+          />
+          <label htmlFor="verifiedNgo" className="text-sm font-medium text-gray-300 select-none cursor-pointer">
+            NGO / Hospital-Partnered Campaign (Verified NGO Badge)
+          </label>
         </div>
 
         <div>

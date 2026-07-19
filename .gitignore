@@ -13,3 +13,12 @@ frontend/dist/
 *.njsproj
 *.sln
 *.sw?
+
+# Test snapshots & temporary helpers
+contracts/verifund/test_snapshots/
+update_readme.py
+frontend/generate_wallets_transactions.js
+frontend/submit_feedback.js
+feedback_submission.log
+
+

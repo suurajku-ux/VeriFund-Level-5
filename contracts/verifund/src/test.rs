@@ -44,7 +44,7 @@ fn test_create_campaign_valid_milestones() {
     });
 
     // Valid milestones sum up to goal (1000)
-    let campaign_id = client.create_campaign(&creator, &1000, &2000, &milestones);
+    let campaign_id = client.create_campaign(&creator, &1000, &2000, &milestones, &false);
     assert_eq!(campaign_id, 1);
 
     // Get campaign details and assert
@@ -78,7 +78,7 @@ fn test_create_campaign_invalid_milestones_sum() {
         released: false,
     });
 
-    let result = client.try_create_campaign(&creator, &1000, &2000, &milestones);
+    let result = client.try_create_campaign(&creator, &1000, &2000, &milestones, &false);
     assert!(result.is_err());
 }
 
@@ -102,7 +102,7 @@ fn test_successful_contribution_tracking() {
         proof_submitted: false,
         released: false,
     });
-    let campaign_id = client.create_campaign(&creator, &1000, &2000, &milestones);
+    let campaign_id = client.create_campaign(&creator, &1000, &2000, &milestones, &false);
 
     // Contribute
     client.contribute(&campaign_id, &backer, &400);
@@ -139,7 +139,7 @@ fn test_release_milestone_fails_if_no_proof() {
         proof_submitted: false,
         released: false,
     });
-    let campaign_id = client.create_campaign(&creator, &1000, &2000, &milestones);
+    let campaign_id = client.create_campaign(&creator, &1000, &2000, &milestones, &false);
 
     // Fully fund the campaign so we can try to release
     client.contribute(&campaign_id, &backer, &1000);
@@ -168,7 +168,7 @@ fn test_release_milestone_succeeds_after_proof() {
         proof_submitted: false,
         released: false,
     });
-    let campaign_id = client.create_campaign(&creator, &1000, &2000, &milestones);
+    let campaign_id = client.create_campaign(&creator, &1000, &2000, &milestones, &false);
 
     client.contribute(&campaign_id, &backer, &1000);
 
@@ -221,7 +221,7 @@ fn test_proportional_refund_math() {
         released: false,
     });
 
-    let campaign_id = client.create_campaign(&creator, &1000, &2000, &milestones);
+    let campaign_id = client.create_campaign(&creator, &1000, &2000, &milestones, &false);
 
     // Backer A contributes 600, Backer B contributes 400 (Campaign fully funded: 1000/1000)
     client.contribute(&campaign_id, &backer_a, &600);
@@ -293,12 +293,12 @@ fn test_unauthorized_attempts() {
             invoke: &soroban_sdk::testutils::MockAuthInvoke {
                 contract: &client.address,
                 fn_name: "create_campaign",
-                args: (&creator, 1000_i128, 2000_u64, milestones.clone()).into_val(&env),
+                args: (&creator, 1000_i128, 2000_u64, milestones.clone(), false).into_val(&env),
                 sub_invokes: &[],
             },
         }
     ]);
-    let campaign_id = client.create_campaign(&creator, &1000, &2000, &milestones);
+    let campaign_id = client.create_campaign(&creator, &1000, &2000, &milestones, &false);
 
     // Verify that submitting proof requires creator auth and fails if signed by wrong_user
     let proof_hash = BytesN::from_array(&env, &[5u8; 32]);
@@ -337,7 +337,7 @@ fn test_finalize_before_deadline_fails() {
         proof_submitted: false,
         released: false,
     });
-    let campaign_id = client.create_campaign(&creator, &1000, &2000, &milestones);
+    let campaign_id = client.create_campaign(&creator, &1000, &2000, &milestones, &false);
 
     // Set time before deadline (1000 < 2000)
     env.ledger().with_mut(|li| {
@@ -347,4 +347,106 @@ fn test_finalize_before_deadline_fails() {
     // Try to finalize - should fail
     let result = client.try_finalize_or_refund(&campaign_id);
     assert!(result.is_err());
+}
+
+#[test]
+fn test_creator_trust_score_and_active_campaigns() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let (client, _, _, token_admin) = setup_test(&env);
+    let creator = Address::generate(&env);
+    let backer = Address::generate(&env);
+
+    token_admin.mint(&backer, &2000);
+
+    // Initial trust score of creator with no history should be 100
+    assert_eq!(client.get_creator_trust_score(&creator), 100);
+
+    // Create active campaign 1 (not verified NGO)
+    let mut milestones_1 = Vec::new(&env);
+    milestones_1.push_back(Milestone {
+        milestone_id: 1,
+        title: String::from_str(&env, "Phase 1"),
+        amount: 500,
+        proof_submitted: false,
+        released: false,
+    });
+    milestones_1.push_back(Milestone {
+        milestone_id: 2,
+        title: String::from_str(&env, "Phase 2"),
+        amount: 500,
+        proof_submitted: false,
+        released: false,
+    });
+    let campaign_id_1 = client.create_campaign(&creator, &1000, &2000, &milestones_1, &false);
+    
+    // Create active campaign 2 (verified NGO)
+    let mut milestones_2 = Vec::new(&env);
+    milestones_2.push_back(Milestone {
+        milestone_id: 1,
+        title: String::from_str(&env, "NGO Phase 1"),
+        amount: 1000,
+        proof_submitted: false,
+        released: false,
+    });
+    let campaign_id_2 = client.create_campaign(&creator, &1000, &3000, &milestones_2, &true);
+
+    // Verify verified_ngo flag is correctly saved
+    let campaign_1 = client.get_campaign(&campaign_id_1);
+    let campaign_2 = client.get_campaign(&campaign_id_2);
+    assert!(!campaign_1.verified_ngo);
+    assert!(campaign_2.verified_ngo);
+
+    // Set time before deadline of both
+    env.ledger().with_mut(|li| {
+        li.timestamp = 500;
+    });
+
+    // Check active campaigns: both should be active
+    let active = client.get_active_campaigns();
+    assert_eq!(active.len(), 2);
+    assert_eq!(active.get(0).unwrap(), campaign_id_1);
+    assert_eq!(active.get(1).unwrap(), campaign_id_2);
+
+    // Fully fund campaign 1
+    client.contribute(&campaign_id_1, &backer, &1000);
+
+    // Submit proof for milestone 1 in campaign 1
+    let proof_hash = BytesN::from_array(&env, &[1u8; 32]);
+    client.submit_proof(&campaign_id_1, &1, &proof_hash);
+    client.release_milestone(&campaign_id_1, &1);
+
+    // Advance time past campaign 1 deadline but before campaign 2 deadline
+    env.ledger().with_mut(|li| {
+        li.timestamp = 2500;
+    });
+
+    // Check active campaigns: only campaign 2 should be active (since campaign 1 deadline has passed)
+    let active_after = client.get_active_campaigns();
+    assert_eq!(active_after.len(), 1);
+    assert_eq!(active_after.get(0).unwrap(), campaign_id_2);
+
+    // Finalize campaign 1 (Milestone 1 is proven, Milestone 2 is unproven and refunded)
+    client.finalize_or_refund(&campaign_id_1);
+
+    // Trust score calculation:
+    // Campaign 1 is ended/finalized (refunded). Total milestones = 2. Proven milestones = 1 (Milestone 1).
+    // Campaign 2 is active, so its milestones do not count toward trust score yet.
+    // Score should be (1 / 2) * 100 = 50
+    assert_eq!(client.get_creator_trust_score(&creator), 50);
+
+    // Now finalize campaign 2 by letting its deadline pass (unfunded, so it will be 100% refunded)
+    env.ledger().with_mut(|li| {
+        li.timestamp = 3500;
+    });
+    client.finalize_or_refund(&campaign_id_2);
+
+    // Trust score calculation:
+    // Campaign 1 has 2 milestones (1 proven, 1 unproven).
+    // Campaign 2 has 1 milestone (0 proven, 1 unproven).
+    // Total milestones across finalized campaigns = 2 + 1 = 3.
+    // Total proven milestones = 1.
+    // Score should be (1 / 3) * 100 = 33
+    assert_eq!(client.get_creator_trust_score(&creator), 33);
 }

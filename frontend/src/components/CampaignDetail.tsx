@@ -18,6 +18,7 @@ export const CampaignDetail: React.FC<CampaignDetailProps> = ({ campaignId, addr
   const [uploadingMilestoneId, setUploadingMilestoneId] = useState<number | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileHash, setFileHash] = useState('');
+  const [trustScore, setTrustScore] = useState<number | null>(null);
 
   const fetchCampaign = async () => {
     try {
@@ -32,6 +33,14 @@ export const CampaignDetail: React.FC<CampaignDetailProps> = ({ campaignId, addr
   useEffect(() => {
     fetchCampaign();
   }, [campaignId]);
+
+  useEffect(() => {
+    if (campaign) {
+      StellarService.getCreatorTrustScore(campaign.creator)
+        .then(setTrustScore)
+        .catch(() => setTrustScore(100));
+    }
+  }, [campaignId, campaign?.creator]);
 
   if (!campaign) {
     return (
@@ -213,7 +222,14 @@ export const CampaignDetail: React.FC<CampaignDetailProps> = ({ campaignId, addr
             <div className="absolute top-0 left-0 w-[4px] h-full bg-gradient-to-b from-blue-500 to-teal-400"></div>
             
             <div className="flex items-center justify-between gap-2 mb-3">
-              <span className="text-xs font-bold text-blue-400 uppercase tracking-wide">{campaign.category}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-blue-400 uppercase tracking-wide">{campaign.category}</span>
+                {campaign.verified_ngo && (
+                  <span className="flex items-center gap-0.5 px-2 py-0.5 rounded bg-teal-500/15 text-teal-400 border border-teal-500/30 text-[10px] font-bold tracking-wider uppercase">
+                    <ShieldCheck className="h-3 w-3" /> NGO Verified
+                  </span>
+                )}
+              </div>
               <span className="text-xs text-gray-400 flex items-center gap-1">
                 <Clock className="h-3.5 w-3.5" />
                 {hasEnded ? 'Ended' : `Ends: ${new Date(campaign.deadline * 1000).toLocaleDateString()}`}
@@ -228,8 +244,21 @@ export const CampaignDetail: React.FC<CampaignDetailProps> = ({ campaignId, addr
               {campaign.description}
             </p>
 
-            <div className="p-3 bg-white/5 border border-white/5 rounded-xl text-xs space-y-1">
-              <p className="text-gray-400"><span className="font-semibold text-gray-300">Creator Escrow:</span> {campaign.creator}</p>
+            <div className="p-3 bg-white/5 border border-white/5 rounded-xl text-xs space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-gray-400 truncate"><span className="font-semibold text-gray-300">Creator Escrow:</span> {campaign.creator}</p>
+                {trustScore !== null && (
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono border uppercase tracking-wider ${
+                    trustScore >= 80 
+                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+                      : trustScore >= 50 
+                        ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' 
+                        : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                  }`}>
+                    Creator Trust Score: {trustScore}%
+                  </span>
+                )}
+              </div>
               <p className="text-gray-400"><span className="font-semibold text-gray-300">VeriFund Contract:</span> Deployed on Stellar Testnet</p>
             </div>
           </div>
@@ -240,6 +269,48 @@ export const CampaignDetail: React.FC<CampaignDetailProps> = ({ campaignId, addr
               <Award className="h-5 w-5 text-blue-400" />
               Milestone Escrow Release Progress
             </h2>
+
+            {/* Interactive Timeline Bar */}
+            <div className="mb-6 p-4 bg-white/5 rounded-xl border border-white/5 space-y-3">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400">Milestone Timeline</h3>
+              <div className="flex items-center justify-between relative mt-2 px-4">
+                {/* Connecting line */}
+                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/10 -translate-y-1/2 z-0"></div>
+                {campaign.milestones.map((m, index) => {
+                  const isCompleted = m.released;
+                  const isProven = m.proof_submitted;
+                  return (
+                    <div key={m.milestone_id} className="flex flex-col items-center z-10 relative">
+                      <div className={`h-8 w-8 rounded-full border-2 flex items-center justify-center font-bold text-xs ${
+                        isCompleted 
+                          ? 'bg-teal-500 border-teal-400 text-black shadow-lg shadow-teal-500/20' 
+                          : isProven 
+                            ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-500/20' 
+                            : 'bg-slate-800 border-slate-700 text-gray-400'
+                      }`}>
+                        {index + 1}
+                      </div>
+                      <span className="text-[9px] text-gray-400 mt-1 font-semibold truncate max-w-[80px]">
+                        {m.released ? 'Released' : m.proof_submitted ? 'Proven' : 'Pending'}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Cryptographic explanation info box */}
+            <div className="p-3 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs rounded-lg flex items-start gap-2 mb-4">
+              <HelpCircle className="h-4 w-4 shrink-0 mt-0.5" />
+              <div>
+                <strong>What is a Cryptographic Proof Hash?</strong>
+                <p className="text-gray-300 mt-0.5 leading-relaxed">
+                  A proof hash is a unique 32-byte fingerprint (SHA-256) of your medical document generated directly on your browser. 
+                  Only this fingerprint is recorded on the Stellar ledger. This guarantees absolute verification that the receipt exists, 
+                  while protecting the patient's private medical data from being publicly readable on-chain.
+                </p>
+              </div>
+            </div>
 
             <div className="space-y-4">
               {campaign.milestones.map((m, index) => {
@@ -446,6 +517,31 @@ export const CampaignDetail: React.FC<CampaignDetailProps> = ({ campaignId, addr
                 </p>
               </div>
             )}
+          </div>
+
+          {/* Social Sharing Card */}
+          <div className="glass-card p-6 border border-white/10 space-y-4">
+            <h2 className="text-lg font-bold font-outfit text-white">Share Campaign</h2>
+            <p className="text-xs text-gray-400 leading-relaxed font-semibold">
+              Share this milestone-secured fundraising campaign with your network to help reach the goal!
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                readOnly
+                className="flex-1 px-3 py-2 rounded-lg glass-input text-xs font-mono select-all bg-black/40 border border-white/5"
+                value={`${window.location.origin}/campaign/${campaign.id}`}
+              />
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(`${window.location.origin}/campaign/${campaign.id}`);
+                  setActionSuccess('Campaign sharing link copied to clipboard!');
+                }}
+                className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-xs text-white rounded-lg font-bold transition-all"
+              >
+                Copy
+              </button>
+            </div>
           </div>
         </div>
         

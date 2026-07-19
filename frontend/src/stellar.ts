@@ -23,6 +23,7 @@ export interface Campaign {
   milestones: Milestone[];
   refunded: boolean;
   status: 'Active' | 'PartiallyReleased' | 'Completed' | 'Refunded';
+  verified_ngo: boolean;
 }
 
 export interface Contribution {
@@ -76,7 +77,8 @@ const seedSimulationDB = () => {
         { milestone_id: 2, title: 'Post-op Cardiac Medicines', amount: 400, proof_submitted: false, released: false }
       ],
       refunded: false,
-      status: 'PartiallyReleased'
+      status: 'PartiallyReleased',
+      verified_ngo: true
     },
     {
       id: 2,
@@ -92,7 +94,8 @@ const seedSimulationDB = () => {
         { milestone_id: 2, title: 'Remaining 3 Cycles & Scans', amount: 1000, proof_submitted: false, released: false }
       ],
       refunded: false,
-      status: 'Active'
+      status: 'Active',
+      verified_ngo: false
     }
   ];
 
@@ -325,7 +328,8 @@ export const StellarService = {
               released: !!m.released
             })),
             refunded: !!nativeCampaign.refunded,
-            status: statusNative === 0 ? 'Active' : statusNative === 1 ? 'PartiallyReleased' : statusNative === 2 ? 'Completed' : 'Refunded'
+            status: statusNative === 0 ? 'Active' : statusNative === 1 ? 'PartiallyReleased' : statusNative === 2 ? 'Completed' : 'Refunded',
+            verified_ngo: nativeCampaign.verified_ngo !== undefined ? !!nativeCampaign.verified_ngo : !!localMeta.verified_ngo
           };
 
           campaigns.push(campaign);
@@ -346,7 +350,8 @@ export const StellarService = {
     category: string,
     goal: number,
     deadlineSecs: number,
-    milestones: { title: string; amount: number }[]
+    milestones: { title: string; amount: number }[],
+    verifiedNgo: boolean
   ): Promise<string> => {
     const creator = await StellarService.getWalletAddress();
 
@@ -372,7 +377,8 @@ export const StellarService = {
         deadline: deadlineSecs,
         milestones: formattedMilestones,
         refunded: false,
-        status: 'Active'
+        status: 'Active',
+        verified_ngo: verifiedNgo
       };
 
       campaigns.push(newCampaign);
@@ -392,7 +398,8 @@ export const StellarService = {
         StellarSdk.nativeToScVal(creator, { type: 'address' }),
         StellarSdk.nativeToScVal(BigInt(goal * XLM_DECIMALS), { type: 'i128' }),
         StellarSdk.nativeToScVal(BigInt(deadlineSecs), { type: 'u64' }),
-        milestoneVec
+        milestoneVec,
+        StellarSdk.nativeToScVal(verifiedNgo)
       ];
 
       const txHash = await submitSorobanTransaction('create_campaign', args);
@@ -400,7 +407,7 @@ export const StellarService = {
       // Save campaign metadata locally keyed by the expected new index
       const count = await simulateCall('get_campaign_count');
       const nextId = Number(count) + 1;
-      localStorage.setItem(`verifund_meta_${nextId}`, JSON.stringify({ title, description, category }));
+      localStorage.setItem(`verifund_meta_${nextId}`, JSON.stringify({ title, description, category, verified_ngo: verifiedNgo }));
 
       return txHash;
     } catch (error) {
@@ -639,6 +646,52 @@ export const StellarService = {
       return results;
     } catch (e) {
       console.error(e);
+      return [];
+    }
+  },
+
+  getCreatorTrustScore: async (creator: string): Promise<number> => {
+    if (getUseSimulation()) {
+      const campaigns = getSimCampaigns().filter(c => c.creator === creator);
+      let totalMilestones = 0;
+      let provenMilestones = 0;
+      campaigns.forEach(c => {
+        const hasEnded = (Date.now() / 1000) >= c.deadline || c.refunded;
+        if (hasEnded) {
+          c.milestones.forEach(m => {
+            totalMilestones++;
+            if (m.proof_submitted) {
+              provenMilestones++;
+            }
+          });
+        }
+      });
+      return totalMilestones === 0 ? 100 : Math.round((provenMilestones * 100) / totalMilestones);
+    }
+
+    try {
+      const score = await simulateCall('get_creator_trust_score', [
+        StellarSdk.nativeToScVal(creator, { type: 'address' })
+      ]);
+      return Number(score);
+    } catch (e) {
+      console.error("Error fetching trust score from Soroban:", e);
+      return 100;
+    }
+  },
+
+  getActiveCampaigns: async (): Promise<number[]> => {
+    if (getUseSimulation()) {
+      return getSimCampaigns()
+        .filter(c => !c.refunded && (Date.now() / 1000) < c.deadline)
+        .map(c => c.id);
+    }
+
+    try {
+      const activeIds = await simulateCall('get_active_campaigns');
+      return activeIds.map((id: any) => Number(id));
+    } catch (e) {
+      console.error("Error fetching active campaigns from Soroban:", e);
       return [];
     }
   }
