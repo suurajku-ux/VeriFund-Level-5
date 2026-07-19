@@ -131,23 +131,23 @@ function milestoneToScVal(m: { milestone_id: number, title: string, amount: numb
   // Sort keys alphabetically: amount, milestone_id, proof_submitted, released, title
   return StellarSdk.xdr.ScVal.scvMap([
     new StellarSdk.xdr.ScMapEntry({
-      key: StellarSdk.nativeToScVal('amount'),
+      key: StellarSdk.nativeToScVal('amount', { type: 'symbol' }),
       val: StellarSdk.nativeToScVal(BigInt(m.amount), { type: 'i128' })
     }),
     new StellarSdk.xdr.ScMapEntry({
-      key: StellarSdk.nativeToScVal('milestone_id'),
+      key: StellarSdk.nativeToScVal('milestone_id', { type: 'symbol' }),
       val: StellarSdk.nativeToScVal(m.milestone_id, { type: 'u32' })
     }),
     new StellarSdk.xdr.ScMapEntry({
-      key: StellarSdk.nativeToScVal('proof_submitted'),
+      key: StellarSdk.nativeToScVal('proof_submitted', { type: 'symbol' }),
       val: StellarSdk.nativeToScVal(false, { type: 'bool' })
     }),
     new StellarSdk.xdr.ScMapEntry({
-      key: StellarSdk.nativeToScVal('released'),
+      key: StellarSdk.nativeToScVal('released', { type: 'symbol' }),
       val: StellarSdk.nativeToScVal(false, { type: 'bool' })
     }),
     new StellarSdk.xdr.ScMapEntry({
-      key: StellarSdk.nativeToScVal('title'),
+      key: StellarSdk.nativeToScVal('title', { type: 'symbol' }),
       val: StellarSdk.nativeToScVal(m.title, { type: 'string' })
     })
   ]);
