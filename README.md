@@ -5,8 +5,9 @@ VeriFund is a production-ready, milestone-based crowdfunding escrow platform des
 It addresses donor trust and fundraising fraud by replacing the traditional lump-sum release model with a conditional milestone-based escrow. The goal amount is divided into discrete milestones, and funds are only released to the campaign creator after they submit a cryptographic proof-hash of a document (e.g. medical bills, surgery receipts) on-chain. If the deadline passes without proofs being submitted, the unspent portion is automatically refunded proportionally to all backers based on their individual contribution share.
 
 ### 🔗 Quick Links
-- **Live Deployed Website**: [veri-fund-delta.vercel.app](https://veri-fund-delta.vercel.app/)
-- **Live Demo Video Walkthrough**: [Google Photos Demo Video](https://photos.app.goo.gl/yTxxo6vWPnDnPF1Z7)
+- **Live Deployed Website**: [veri-fund-level-5.vercel.app](https://veri-fund-level-5.vercel.app/)
+- **Vercel Project Dashboard**: [Vercel Dashboard](https://vercel.com/suraj6464/veri-fund-level-5)
+- **Live Demo Video Walkthrough**: [Google Photos Demo Video](https://photos.app.goo.gl/18trJYWtboq73RxGA)
 - **User Onboarding Feedback Form**: [Google Form](https://docs.google.com/forms/d/1-unjNsP5OzAESlHGkuoQBL9c3ZnG40KaNeHT-B4uEYY/edit)
 - **Onboarded Users Feedback Responses**: [Google Response Sheet](https://docs.google.com/spreadsheets/d/1mlCpVn_BjrrU_yev91L6Pw2tY5rI1Gajb2WAStx9h9g/edit?usp=sharing)
 
@@ -227,7 +228,9 @@ chmod +x deploy.sh
 *   **Proof Submission Tx Hash**: [`6ab5172b7b15b7ee56faf4df1e0365bd1fa65fdb46a855bfe0fc8c46562a660f`](https://stellar.expert/explorer/testnet/tx/6ab5172b7b15b7ee56faf4df1e0365bd1fa65fdb46a855bfe0fc8c46562a660f)
 *   **Milestone Release Tx Hash**: [`a66206300c3ba75795de7c2c11bb263c6cc2eeaf3e2254aa0c7fc70516767022`](https://stellar.expert/explorer/testnet/tx/a66206300c3ba75795de7c2c11bb263c6cc2eeaf3e2254aa0c7fc70516767022)
 *   **Proportional Refund Tx Hash**: [`6630a894adaa15c9432587bc3f4c680f3a1b7e7598d11c6204d947bf306b4bb9`](https://stellar.expert/explorer/testnet/tx/6630a894adaa15c9432587bc3f4c680f3a1b7e7598d11c6204d947bf306b4bb9)
-*   **Live Demo (Production)**: [VeriFund Live Demo](https://veri-fund-delta.vercel.app/)\n*   **Pitch Deck (PPT)**: `<ADD_PITCH_DECK_LINK>`\n*   **Demo Video Walkthrough**: `<ADD_DEMO_VIDEO_LINK>`
+*   **Live Demo (Production)**: [VeriFund Live Demo](https://veri-fund-level-5.vercel.app/)
+*   **Pitch Deck (PPT)**: `<ADD_PITCH_DECK_LINK>`
+*   **Demo Video Walkthrough**: [Google Photos Demo Video](https://photos.app.goo.gl/18trJYWtboq73RxGA)
 
 ---
 
