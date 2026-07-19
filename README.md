@@ -292,6 +292,14 @@ To collect and track responses during the user feedback phase, we set up a publi
 
 *   **Product Interface**: ![alt text](image.png)
 *   **Mobile Responsiveness**: ![alt text](image-1.png)
+-
 *   **Sentry Monitoring Console**: ![alt text](image-2.png)
 *   **CI/CD Workflow**: ![alt text](image-3.png)
 *   **Demo Video**: [VeriFund Live Demo Video](https://photos.app.goo.gl/yTxxo6vWPnDnPF1Z7)
+
+*   **Sentry Monitoring Console**: <img width="1917" height="812" alt="image" src="https://github.com/user-attachments/assets/6a9bc53a-a461-452e-bc1f-e891df569b3a" />
+*   **CI/CD Workflow**: <img width="1867" height="607" alt="image" src="https://github.com/user-attachments/assets/64baad26-d20b-423c-a46c-2ad6b69f4106" />
+
+
+*   **Demo Video**: [VeriFund Demo Walkthrough Video](https://youtube.com/verifund-stellar-demo)
+
