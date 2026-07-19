@@ -6,9 +6,8 @@ It addresses donor trust and fundraising fraud by replacing the traditional lump
 
 ### 🔗 Quick Links
 - **Live Deployed Website**: [veri-fund-level-5.vercel.app](https://veri-fund-level-5.vercel.app/)
-- **Vercel Project Dashboard**: [Vercel Dashboard](https://vercel.com/suraj6464/veri-fund-level-5)
 - **Live Demo Video Walkthrough**: [Google Photos Demo Video](https://photos.app.goo.gl/18trJYWtboq73RxGA)
-- **User Onboarding Feedback Form**: [Google Form](https://docs.google.com/forms/d/1-unjNsP5OzAESlHGkuoQBL9c3ZnG40KaNeHT-B4uEYY/edit)
+- **User Onboarding Feedback Form**: [Google Form](https://docs.google.com/forms/d/1-unjNsP5OzAESlHGkuoQBL9c3ZnG40KaNeHT-B4uEYY/viewform)
 - **Onboarded Users Feedback Responses**: [Google Response Sheet](https://docs.google.com/spreadsheets/d/1mlCpVn_BjrrU_yev91L6Pw2tY5rI1Gajb2WAStx9h9g/edit?usp=sharing)
 
 ---
