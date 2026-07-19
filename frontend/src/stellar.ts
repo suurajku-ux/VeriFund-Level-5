@@ -320,12 +320,34 @@ export const StellarService = {
             goal_amount: Number(nativeCampaign.goal_amount) / XLM_DECIMALS,
             total_raised: Number(nativeCampaign.total_raised) / XLM_DECIMALS,
             deadline: Number(nativeCampaign.deadline),
-            milestones: nativeCampaign.milestones.map((m: any) => ({
-              milestone_id: Number(m.milestone_id),
-              title: m.title.toString(),
-              amount: Number(m.amount) / XLM_DECIMALS,
-              proof_submitted: !!m.proof_submitted,
-              released: !!m.released
+            milestones: await Promise.all(nativeCampaign.milestones.map(async (m: any) => {
+              const milestone_id = Number(m.milestone_id);
+              const proof_submitted = !!m.proof_submitted;
+              let proof_hash = '';
+              let proof_timestamp = 0;
+              if (proof_submitted) {
+                try {
+                  const record = await simulateCall('get_proof_record', [
+                    StellarSdk.nativeToScVal(BigInt(id), { type: 'u64' }),
+                    StellarSdk.nativeToScVal(milestone_id, { type: 'u32' })
+                  ]);
+                  if (record) {
+                    proof_hash = Buffer.from(record[0]).toString('hex');
+                    proof_timestamp = Number(record[1]);
+                  }
+                } catch (e) {
+                  console.warn("Failed to fetch proof record:", e);
+                }
+              }
+              return {
+                milestone_id,
+                title: m.title.toString(),
+                amount: Number(m.amount) / XLM_DECIMALS,
+                proof_submitted,
+                released: !!m.released,
+                proof_hash,
+                proof_timestamp
+              };
             })),
             refunded: !!nativeCampaign.refunded,
             status: statusNative === 0 ? 'Active' : statusNative === 1 ? 'PartiallyReleased' : statusNative === 2 ? 'Completed' : 'Refunded',
