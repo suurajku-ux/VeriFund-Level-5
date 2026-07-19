@@ -217,7 +217,7 @@ async function submitSorobanTransaction(funcName: string, args: StellarSdk.xdr.S
   }
 
   // Assemble footprint into tx
-  const assembledTx = StellarSdk.rpc.assembleTransaction(tx, sim) as any;
+  const assembledTx = StellarSdk.rpc.assembleTransaction(tx, sim).build();
 
   // Request Freighter Signature
   const xdr = assembledTx.toXDR();
